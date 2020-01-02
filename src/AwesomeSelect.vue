@@ -5,19 +5,26 @@
       v-model="searchText"
       :placeholder="selected"
       @keyup.esc="optionExpand = false"
+      @keyup.enter="selectFirstItem"
       v-closable="{
         exclude: [],
         handler: 'closeExpand'
       }"
       @click="optionExpand = true"/>
+    <div class="a-select-icon">
+      <img v-show="selected !== null" @click="clearSelected" src="./assets/cross.svg" height="10"/>
+      <img v-if="!optionExpand" src="./assets/up-chevron.svg" height="12"/>
+      <img v-if="optionExpand" src="./assets/down-chevron.svg" height="12"/>
+    </div>
     <div class="a-select-options" v-show="optionExpand">
       <p
-        v-for="item in 100"
+        v-for="item in virtualOptions"
         :key="item"
         @click="select(item)"
         class="a-select-item">
         {{ item }}
       </p>
+      <p class="a-select-message" v-if="virtualOptions.length === 0">Sorry, no matching option.</p>
     </div>
   </div>
 </template>
@@ -55,13 +62,15 @@ Vue.directive('closable', {
 
 export default {
   name: 'AwesomeSelect',
+  props: {
+    options: {
+      type: Array,
+      default: () => [...Array(500).keys()]
+    }
+  },
   data () {
     return {
-      options: [
-        'AAA', 'BBB', 'CCC',
-        'A1', 'B5', 'C4',
-        'A2', 'B1', 'C7'
-      ],
+      virtualOptions: this.options,
       searchText: '',
       selected: null,
       optionExpand: false
@@ -70,10 +79,24 @@ export default {
   methods: {
     select (item) {
       this.selected = item
+      this.searchText = ''
       this.closeExpand()
+    },
+    clearSelected () {
+      this.selected = null
     },
     closeExpand () {
       this.optionExpand = false
+    },
+    selectFirstItem () {
+      this.select(this.virtualOptions[0])
+    }
+  },
+  watch: {
+    searchText (searchValue) {
+      this.virtualOptions = this.options.filter((item) => {
+        return JSON.stringify(item).toLowerCase().includes(this.searchText.toLowerCase())
+      })
     }
   }
 }
@@ -86,6 +109,19 @@ export default {
 
     .a-select-input {
       padding: 1px
+    }
+
+    .a-select-icon {
+      position: absolute;
+      padding-top: 2px;
+      right: 1rem;
+
+      img {
+        &:first-child {
+          padding-right: 5px;
+          cursor: pointer;
+        }
+      }
     }
 
     .a-select-options {
@@ -103,6 +139,10 @@ export default {
           background-color: #855ce8;
           color: white;
         }
+      }
+
+      .a-select-message {
+        text-align: center
       }
     }
   }
