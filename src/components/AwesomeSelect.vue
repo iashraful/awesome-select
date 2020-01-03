@@ -5,8 +5,10 @@
       class="awesome-select-input"
       v-model="searchText"
       @keyup.esc="optionExpand = false"
-      :placeholder="placeholder"
-      @keyup.enter="selectFirstItem"
+      :placeholder="selected ? selected : placeholder"
+      @keyup.enter="selectSelectableItem"
+      @keyup.up="onArrowKeyUp"
+      @keyup.down="onArrowKeyDown"
       v-closable="{
         exclude: [],
         handler: 'closeExpand'
@@ -25,14 +27,13 @@
         <img v-if="optionExpand" src="../assets/down-chevron.svg" height="12"/>
       </slot>
     </div>
-
     <div class="awesome-select-options" v-show="optionExpand">
       <div
-        v-for="item in virtualOptions"
-        :key="item"
-        @click='select(item)'
         class="awesome-select-item"
-      >
+        v-for="(item, _index) in virtualOptions"
+        :key="item"
+        @click="select(item)"
+        :class="selectableIndex === _index ? 'active': ''">
         {{ item }}
       </div>
 
@@ -90,6 +91,7 @@
         searchText: '',
         selected: null,
         optionExpand: false,
+        selectableIndex: 0
       }
     },
     methods: {
@@ -97,21 +99,30 @@
         this.searchText = ''
       },
       select(item) {
-        console.log(item)
         this.selected = item
-        this.searchText = item.toString()
         this.closeExpand()
       },
       clearSelected() {
         this.selected = null
-        this.searchText = ''
       },
       closeExpand() {
         this.optionExpand = false
       },
-      selectFirstItem() {
-        this.select(this.virtualOptions[0])
-      }
+      selectSelectableItem () {
+        this.select(this.virtualOptions[this.selectableIndex])
+      },
+      onArrowKeyUp () {
+        let index = this.selectableIndex ? this.selectableIndex - 1 : 0
+        this.updateSelectableIndex(index)
+      },
+      onArrowKeyDown () {
+        let index = this.selectableIndex !== null ? this.selectableIndex + 1 : 0
+        this.updateSelectableIndex(index)
+      },
+      updateSelectableIndex (index) {
+        let dataLength = this.virtualOptions.length
+        this.selectableIndex = dataLength <= index ? dataLength - 1 : index
+      },
     },
     watch: {
       searchText(searchValue) {
@@ -166,6 +177,10 @@
           background-color: #855ce8;
           color: white;
         }
+      }
+      .active {
+        background-color: #855ce8;
+        color: white;
       }
 
       .awesome-select-message {
