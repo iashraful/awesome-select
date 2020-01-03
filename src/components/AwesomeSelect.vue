@@ -5,7 +5,9 @@
       v-model="searchText"
       :placeholder="selected"
       @keyup.esc="optionExpand = false"
-      @keyup.enter="selectFirstItem"
+      @keyup.enter="selectSelectableItem"
+      @keyup.up="onArrowKeyUp"
+      @keyup.down="onArrowKeyDown"
       v-closable="{
         exclude: [],
         handler: 'closeExpand'
@@ -18,10 +20,12 @@
     </div>
     <div class="a-select-options" v-show="optionExpand">
       <p
-        v-for="item in virtualOptions"
+        class="a-select-item"
+        v-for="(item, _index) in virtualOptions"
         :key="item"
         @click="select(item)"
-        class="a-select-item">
+        :class="selectableIndex === _index ? 'active': ''"
+        >
         {{ item }}
       </p>
       <p class="a-select-message" v-if="virtualOptions.length === 0">Sorry, no matching option.</p>
@@ -73,7 +77,8 @@ export default {
       virtualOptions: this.options,
       searchText: '',
       selected: null,
-      optionExpand: false
+      optionExpand: false,
+      selectableIndex: 0
     }
   },
   methods: {
@@ -88,8 +93,20 @@ export default {
     closeExpand () {
       this.optionExpand = false
     },
-    selectFirstItem () {
-      this.select(this.virtualOptions[0])
+    selectSelectableItem () {
+      this.select(this.virtualOptions[this.selectableIndex])
+    },
+    onArrowKeyUp () {
+      let index = this.selectableIndex ? this.selectableIndex - 1 : 0
+      this.updateSelectableIndex(index)
+    },
+    onArrowKeyDown () {
+      let index = this.selectableIndex !== null ? this.selectableIndex + 1 : 0
+      this.updateSelectableIndex(index)
+    },
+    updateSelectableIndex (index) {
+      let dataLength = this.virtualOptions.length
+      this.selectableIndex = dataLength <= index ? dataLength - 1 : index
     }
   },
   watch: {
@@ -139,6 +156,10 @@ export default {
           background-color: #855ce8;
           color: white;
         }
+      }
+      .active {
+        background-color: #855ce8;
+        color: white;
       }
 
       .a-select-message {
