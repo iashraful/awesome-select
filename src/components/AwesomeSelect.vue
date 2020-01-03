@@ -33,7 +33,7 @@
         v-for="(item, _index) in virtualOptions"
         :key="item"
         @click="select(item)"
-        :class="selectableIndex === _index ? 'active': ''">
+        :class="(selected === item) || (selectableIndex === _index) ? 'active' : ''">
         {{ item }}
       </div>
 
@@ -101,6 +101,8 @@
       select(item) {
         this.selected = item
         this.closeExpand()
+        this.searchText = ''
+        this.selectableIndex = null
       },
       clearSelected() {
         this.selected = null
@@ -126,6 +128,9 @@
     },
     watch: {
       searchText(searchValue) {
+        if (searchValue !== '') {
+          this.optionExpand = true
+        }
         this.virtualOptions = this.options.filter((item) => {
           return JSON.stringify(item).toLowerCase().includes(this.searchText.toLowerCase())
         })
