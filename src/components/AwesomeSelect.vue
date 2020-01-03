@@ -1,109 +1,130 @@
 <template>
-  <div class="a-select">
+  <div class="awesome-select">
     <input
-      class="a-select-input"
+      type="text"
+      class="awesome-select-input"
       v-model="searchText"
-      :placeholder="selected"
       @keyup.esc="optionExpand = false"
+      :placeholder="placeholder"
       @keyup.enter="selectFirstItem"
       v-closable="{
         exclude: [],
         handler: 'closeExpand'
       }"
-      @click="optionExpand = true"/>
-    <div class="a-select-icon">
-      <img v-show="selected !== null" @click="clearSelected" src="../assets/cross.svg" height="10"/>
-      <img v-if="!optionExpand" src="../assets/up-chevron.svg" height="12"/>
-      <img v-if="optionExpand" src="../assets/down-chevron.svg" height="12"/>
+      @click="optionExpand=true"
+    />
+
+    <div class="awesome-select-icon">
+      <slot name="cross">
+        <img v-show="selected !== null" @click="clearSelected" src="../assets/cross.svg" height="10"/>
+      </slot>
+      <slot name="dropdown-up-arrow">
+        <img v-if="!optionExpand" src="../assets/up-chevron.svg" height="12"/>
+      </slot>
+      <slot name="dropdown-up-arrow">
+        <img v-if="optionExpand" src="../assets/down-chevron.svg" height="12"/>
+      </slot>
     </div>
-    <div class="a-select-options" v-show="optionExpand">
-      <p
+
+    <div class="awesome-select-options" v-show="optionExpand">
+      <div
         v-for="item in virtualOptions"
         :key="item"
-        @click="select(item)"
-        class="a-select-item">
+        @click='select(item)'
+        class="awesome-select-item"
+      >
         {{ item }}
-      </p>
-      <p class="a-select-message" v-if="virtualOptions.length === 0">Sorry, no matching option.</p>
+      </div>
+
+      <p class="awesome-select-message" v-if="virtualOptions.length === 0">Sorry, no matching option.</p>
     </div>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
+  import Vue from 'vue'
 
-// Custom directive
-let handleOutsideClick
-Vue.directive('closable', {
-  bind (el, binding, vnode) {
-    handleOutsideClick = (e) => {
-      e.stopPropagation()
-      const { handler, exclude } = binding.value
-      let clickedOnExcludedEl = false
-      exclude.forEach(refName => {
-        if (!clickedOnExcludedEl) {
-          const excludedEl = vnode.context.$refs[refName]
-          clickedOnExcludedEl = excludedEl ? excludedEl.contains(e.target) : false
+  // Custom directive
+  let handleOutsideClick
+  Vue.directive('closable', {
+    bind (el, binding, vnode) {
+      handleOutsideClick = (e) => {
+        e.stopPropagation()
+        const { handler, exclude } = binding.value
+        let clickedOnExcludedEl = false
+        exclude.forEach(refName => {
+          if (!clickedOnExcludedEl) {
+            const excludedEl = vnode.context.$refs[refName]
+            clickedOnExcludedEl = excludedEl ? excludedEl.contains(e.target) : false
+          }
+        })
+        if (!el.contains(e.target) && !clickedOnExcludedEl) {
+          vnode.context[handler]()
         }
-      })
-      if (!el.contains(e.target) && !clickedOnExcludedEl) {
-        vnode.context[handler]()
+      }
+      document.addEventListener('click', handleOutsideClick)
+      document.addEventListener('touchstart', handleOutsideClick)
+    },
+
+    unbind () {
+      document.removeEventListener('click', handleOutsideClick)
+      document.removeEventListener('touchstart', handleOutsideClick)
+    }
+  })
+  export default {
+    name: 'AwesomeSelect',
+    props: {
+      options: {
+        type: Array,
+        default: () => [...Array(500).keys()]
+      },
+      placeholder: {
+        type: String,
+        default: 'search',
+        required: false
+      }
+    },
+    data() {
+      return {
+        virtualOptions: this.options,
+        searchText: '',
+        selected: null,
+        optionExpand: false,
+      }
+    },
+    methods: {
+      handleFocusIn() {
+        this.searchText = ''
+      },
+      select(item) {
+        console.log(item)
+        this.selected = item
+        this.searchText = item.toString()
+        this.closeExpand()
+      },
+      clearSelected() {
+        this.selected = null
+        this.searchText = ''
+      },
+      closeExpand() {
+        this.optionExpand = false
+      },
+      selectFirstItem() {
+        this.select(this.virtualOptions[0])
+      }
+    },
+    watch: {
+      searchText(searchValue) {
+        this.virtualOptions = this.options.filter((item) => {
+          return JSON.stringify(item).toLowerCase().includes(this.searchText.toLowerCase())
+        })
       }
     }
-    document.addEventListener('click', handleOutsideClick)
-    document.addEventListener('touchstart', handleOutsideClick)
-  },
-
-  unbind () {
-    document.removeEventListener('click', handleOutsideClick)
-    document.removeEventListener('touchstart', handleOutsideClick)
   }
-})
-
-export default {
-  name: 'AwesomeSelect',
-  props: {
-    options: {
-      type: Array,
-      default: () => []
-    }
-  },
-  data () {
-    return {
-      virtualOptions: this.options,
-      searchText: '',
-      selected: null,
-      optionExpand: false
-    }
-  },
-  methods: {
-    select (item) {
-      this.selected = item
-      this.searchText = ''
-      this.closeExpand()
-    },
-    clearSelected () {
-      this.selected = null
-    },
-    closeExpand () {
-      this.optionExpand = false
-    },
-    selectFirstItem () {
-      this.select(this.virtualOptions[0])
-    }
-  },
-  watch: {
-    searchText (searchValue) {
-      this.virtualOptions = this.options.filter((item) => {
-        return JSON.stringify(item).toLowerCase().includes(this.searchText.toLowerCase())
-      })
-    }
-  }
-}
 </script>
 
 <style lang="scss">
-  .a-select {
+  .awesome-select {
     display: flex;
     flex-direction: column;
 
@@ -111,7 +132,7 @@ export default {
       padding: 5px
     }
 
-    .a-select-icon {
+    .awesome-select-icon {
       position: absolute;
       padding-top: 5px;
       right: 1rem;
@@ -124,13 +145,19 @@ export default {
       }
     }
 
-    .a-select-options {
+    .awesome-select-options {
       overflow-y: auto;
+      cursor: pointer;
+      z-index: 10;
+      width: 100%;
       max-height: 250px;
       border: 1px solid;
       border-top: unset;
+      background-position: center;
+      /*top: 100%;*/
+      background-color: #fff;
 
-      .a-select-item {
+      .awesome-select-item {
         margin: 0 .5rem;
         padding: 3px .5rem;
         cursor: pointer;
@@ -141,7 +168,7 @@ export default {
         }
       }
 
-      .a-select-message {
+      .awesome-select-message {
         text-align: center
       }
     }
