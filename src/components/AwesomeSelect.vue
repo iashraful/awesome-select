@@ -12,9 +12,9 @@
       }"
       @click="optionExpand = true"/>
     <div class="a-select-icon">
-<!--      <img v-show="selected !== null" @click="clearSelected" src="../assets/cross.svg" height="10"/>-->
-<!--      <img v-if="!optionExpand" src="../assets/up-chevron.svg" height="12"/>-->
-<!--      <img v-if="optionExpand" src="../assets/down-chevron.svg" height="12"/>-->
+      <img v-show="selected !== null" @click="clearSelected" src="../assets/cross.svg" height="10"/>
+      <img v-if="!optionExpand" src="../assets/up-chevron.svg" height="12"/>
+      <img v-if="optionExpand" src="../assets/down-chevron.svg" height="12"/>
     </div>
     <div class="a-select-options" v-show="optionExpand">
       <p
