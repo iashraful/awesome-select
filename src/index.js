@@ -1,3 +1,3 @@
 import AwesomeSelect from './components/AwesomeSelect'
 
-export { AwesomeSelect }
+export default AwesomeSelect
