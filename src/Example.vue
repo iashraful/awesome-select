@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import AwesomeSelect from './AwesomeSelect'
+import AwesomeSelect from './components/AwesomeSelect'
 
 export default {
   name: 'Example',
