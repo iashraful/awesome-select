@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Basic Example</h2>
-    <awesome-select/>
+    <awesome-select :options="options"/>
   </div>
 </template>
 
@@ -10,6 +10,16 @@ import AwesomeSelect from './AwesomeSelect'
 
 export default {
   name: 'Example',
-  components: { AwesomeSelect }
+  components: { AwesomeSelect },
+  data () {
+    return {
+      options: [
+        'Apple',
+        'Ball',
+        'Google',
+        'Other'
+      ]
+    }
+  }
 }
 </script>

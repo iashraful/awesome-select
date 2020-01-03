@@ -65,7 +65,7 @@ export default {
   props: {
     options: {
       type: Array,
-      default: () => [...Array(500).keys()]
+      default: () => []
     }
   },
   data () {
@@ -108,12 +108,12 @@ export default {
     flex-direction: column;
 
     .a-select-input {
-      padding: 1px
+      padding: 5px
     }
 
     .a-select-icon {
       position: absolute;
-      padding-top: 2px;
+      padding-top: 5px;
       right: 1rem;
 
       img {
