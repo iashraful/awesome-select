@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "cross-env NODE_ENV=production webpack --config build/webpack.dev.conf.js --progress",
+    "build": "cross-env NODE_ENV=production webpack --config build/webpack.prod.conf.js --progress",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -12,15 +12,21 @@
     "vue": "^2.6.10"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.7.7",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-plugin-eslint": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.3",
+    "cross-env": "^6.0.3",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.0",
+    "postcss-loader": "^3.0.0",
+    "postcss-scss": "^2.0.0",
     "sass-loader": "^8.0.0",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }
