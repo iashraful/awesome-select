@@ -139,7 +139,7 @@
     display: flex;
     flex-direction: column;
 
-    .a-select-input {
+    .awesome-select-input {
       padding: 5px
     }
 
