@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import AwesomeSelect from './AwesomeSelect.vue'
+import Example from './Example.vue'
 
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(AwesomeSelect)
+  render: h => h(Example)
 }).$mount('#app')

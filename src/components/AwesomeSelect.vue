@@ -12,9 +12,9 @@
       }"
       @click="optionExpand = true"/>
     <div class="a-select-icon">
-      <img v-show="selected !== null" @click="clearSelected" src="./assets/cross.svg" height="10"/>
-      <img v-if="!optionExpand" src="./assets/up-chevron.svg" height="12"/>
-      <img v-if="optionExpand" src="./assets/down-chevron.svg" height="12"/>
+      <img v-show="selected !== null" @click="clearSelected" src="../assets/cross.svg" height="10"/>
+      <img v-if="!optionExpand" src="../assets/up-chevron.svg" height="12"/>
+      <img v-if="optionExpand" src="../assets/down-chevron.svg" height="12"/>
     </div>
     <div class="a-select-options" v-show="optionExpand">
       <p
@@ -65,7 +65,7 @@ export default {
   props: {
     options: {
       type: Array,
-      default: () => [...Array(500).keys()]
+      default: () => []
     }
   },
   data () {
@@ -108,12 +108,12 @@ export default {
     flex-direction: column;
 
     .a-select-input {
-      padding: 1px
+      padding: 5px
     }
 
     .a-select-icon {
       position: absolute;
-      padding-top: 2px;
+      padding-top: 5px;
       right: 1rem;
 
       img {
