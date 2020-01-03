@@ -1,7 +1,9 @@
 <template>
   <div>
     <h2>Basic Example</h2>
-    <awesome-select :options="options"/>
+    <awesome-select
+      placeholder="Select one"
+      :options="options"/>
   </div>
 </template>
 
@@ -13,12 +15,7 @@ export default {
   components: { AwesomeSelect },
   data () {
     return {
-      options: [
-        'Apple',
-        'Ball',
-        'Google',
-        'Other'
-      ]
+      options: [...Array(500).keys()]
     }
   }
 }

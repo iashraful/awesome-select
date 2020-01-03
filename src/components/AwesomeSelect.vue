@@ -76,7 +76,7 @@
     props: {
       options: {
         type: Array,
-        default: () => [...Array(500).keys()]
+        default: () => []
       },
       placeholder: {
         type: String,
