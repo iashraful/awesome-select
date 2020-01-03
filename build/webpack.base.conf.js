@@ -43,6 +43,11 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
+        test: /\.svg$/,
+        loader: 'vue-svg-loader',
+        options: {name: 'assets/[name].[hash:8].[ext]'},
+      },
+      {
         test: /\.s?css$/,
         use: [
           extractOrInjectStyles,
