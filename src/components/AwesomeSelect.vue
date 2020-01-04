@@ -153,7 +153,7 @@ export default {
         this.optionExpand = true
       }
       this.virtualOptions = this.options.filter((item) => {
-        return JSON.stringify(item).toLowerCase().includes(this.searchText.toLowerCase())
+        return JSON.stringify(item[this.labelKey]).toLowerCase().includes(this.searchText.toLowerCase())
       })
     }
   }
