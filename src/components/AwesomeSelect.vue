@@ -5,7 +5,7 @@
       class="awesome-select-input"
       v-model="searchText"
       @keyup.esc="optionExpand = false"
-      :placeholder="selected ? selected : placeholder"
+      :placeholder="selected ? selected[labelKey] : placeholder"
       @keyup.enter="selectSelectableItem"
       @keyup.up="onArrowKeyUp"
       @keyup.down="onArrowKeyDown"
@@ -29,12 +29,13 @@
     </div>
     <div class="awesome-select-options" v-show="optionExpand">
       <div
+        :id="'item-' + _index"
         class="awesome-select-item"
         v-for="(item, _index) in virtualOptions"
-        :key="item"
+        :key="item[valueKey]"
         @click="select(item)"
         :class="(selected === item) || (selectableIndex === _index) ? 'active' : ''">
-        {{ item }}
+        {{ item[labelKey] }}
       </div>
 
       <p class="awesome-select-message" v-if="virtualOptions.length === 0">Sorry, no matching option.</p>
@@ -110,7 +111,7 @@ export default {
       this.searchText = ''
     },
     isObject (value) {
-
+      return typeof value === 'object'
     },
     select (item) {
       this.selected = item
@@ -132,12 +133,18 @@ export default {
       this.updateSelectableIndex(index)
     },
     onArrowKeyDown () {
+      this.optionExpand = true
       let index = this.selectableIndex !== null ? this.selectableIndex + 1 : 0
       this.updateSelectableIndex(index)
+    },
+    scrollToItem () {
+      let el = this.$el.querySelector('#item-' + this.selectableIndex + '')
+      el.scrollIntoView()
     },
     updateSelectableIndex (index) {
       let dataLength = this.virtualOptions.length
       this.selectableIndex = dataLength <= index ? dataLength - 1 : index
+      this.scrollToItem()
     }
   },
   watch: {
