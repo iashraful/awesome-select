@@ -43,100 +43,114 @@
 </template>
 
 <script>
-  import Vue from 'vue'
+import Vue from 'vue'
 
-  // Custom directive
-  let handleOutsideClick
-  Vue.directive('closable', {
-    bind (el, binding, vnode) {
-      handleOutsideClick = (e) => {
-        e.stopPropagation()
-        const { handler, exclude } = binding.value
-        let clickedOnExcludedEl = false
-        exclude.forEach(refName => {
-          if (!clickedOnExcludedEl) {
-            const excludedEl = vnode.context.$refs[refName]
-            clickedOnExcludedEl = excludedEl ? excludedEl.contains(e.target) : false
-          }
-        })
-        if (!el.contains(e.target) && !clickedOnExcludedEl) {
-          vnode.context[handler]()
+// Custom directive
+let handleOutsideClick
+Vue.directive('closable', {
+  bind (el, binding, vnode) {
+    handleOutsideClick = (e) => {
+      e.stopPropagation()
+      const { handler, exclude } = binding.value
+      let clickedOnExcludedEl = false
+      exclude.forEach(refName => {
+        if (!clickedOnExcludedEl) {
+          const excludedEl = vnode.context.$refs[refName]
+          clickedOnExcludedEl = excludedEl ? excludedEl.contains(e.target) : false
         }
+      })
+      if (!el.contains(e.target) && !clickedOnExcludedEl) {
+        vnode.context[handler]()
       }
-      document.addEventListener('click', handleOutsideClick)
-      document.addEventListener('touchstart', handleOutsideClick)
-    },
-
-    unbind () {
-      document.removeEventListener('click', handleOutsideClick)
-      document.removeEventListener('touchstart', handleOutsideClick)
     }
-  })
-  export default {
-    name: 'AwesomeSelect',
-    props: {
-      options: {
-        type: Array,
-        default: () => []
-      },
-      placeholder: {
-        type: String,
-        default: 'search',
-        required: false
-      }
+    document.addEventListener('click', handleOutsideClick)
+    document.addEventListener('touchstart', handleOutsideClick)
+  },
+
+  unbind () {
+    document.removeEventListener('click', handleOutsideClick)
+    document.removeEventListener('touchstart', handleOutsideClick)
+  }
+})
+export default {
+  name: 'AwesomeSelect',
+  props: {
+    options: {
+      type: Array,
+      default: () => [],
+      required: true
     },
-    data() {
-      return {
-        virtualOptions: this.options,
-        searchText: '',
-        selected: null,
-        optionExpand: false,
-        selectableIndex: 0
-      }
+    placeholder: {
+      type: String,
+      default: 'search',
+      required: false
     },
-    methods: {
-      handleFocusIn() {
-        this.searchText = ''
-      },
-      select(item) {
-        this.selected = item
-        this.closeExpand()
-        this.searchText = ''
-        this.selectableIndex = null
-      },
-      clearSelected() {
-        this.selected = null
-      },
-      closeExpand() {
-        this.optionExpand = false
-      },
-      selectSelectableItem () {
-        this.select(this.virtualOptions[this.selectableIndex])
-      },
-      onArrowKeyUp () {
-        let index = this.selectableIndex ? this.selectableIndex - 1 : 0
-        this.updateSelectableIndex(index)
-      },
-      onArrowKeyDown () {
-        let index = this.selectableIndex !== null ? this.selectableIndex + 1 : 0
-        this.updateSelectableIndex(index)
-      },
-      updateSelectableIndex (index) {
-        let dataLength = this.virtualOptions.length
-        this.selectableIndex = dataLength <= index ? dataLength - 1 : index
-      },
+    labelKey: {
+      type: String,
+      default: 'label',
+      required: false
     },
-    watch: {
-      searchText(searchValue) {
-        if (searchValue !== '') {
-          this.optionExpand = true
-        }
-        this.virtualOptions = this.options.filter((item) => {
-          return JSON.stringify(item).toLowerCase().includes(this.searchText.toLowerCase())
-        })
+    valueKey: {
+      type: String,
+      default: 'code',
+      required: false
+    }
+  },
+  data () {
+    return {
+      virtualOptions: this.options,
+      searchText: '',
+      selected: null,
+      optionExpand: false,
+      selectableIndex: 0
+    }
+  },
+  methods: {
+    handleFocusIn () {
+      this.searchText = ''
+    },
+    isObject (value) {
+
+    },
+    select (item) {
+      this.selected = item
+      this.closeExpand()
+      this.searchText = ''
+      this.selectableIndex = null
+    },
+    clearSelected () {
+      this.selected = null
+    },
+    closeExpand () {
+      this.optionExpand = false
+    },
+    selectSelectableItem () {
+      this.select(this.virtualOptions[this.selectableIndex])
+    },
+    onArrowKeyUp () {
+      let index = this.selectableIndex ? this.selectableIndex - 1 : 0
+      this.updateSelectableIndex(index)
+    },
+    onArrowKeyDown () {
+      let index = this.selectableIndex !== null ? this.selectableIndex + 1 : 0
+      this.updateSelectableIndex(index)
+    },
+    updateSelectableIndex (index) {
+      let dataLength = this.virtualOptions.length
+      this.selectableIndex = dataLength <= index ? dataLength - 1 : index
+    }
+  },
+  watch: {
+    searchText (searchValue) {
+      if (searchValue !== '') {
+        this.optionExpand = true
       }
+      this.virtualOptions = this.options.filter((item) => {
+        return JSON.stringify(item).toLowerCase().includes(this.searchText.toLowerCase())
+      })
     }
   }
+}
 </script>
 
 <style lang="scss">

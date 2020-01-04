@@ -3,6 +3,8 @@
     <h2>Basic Example</h2>
     <awesome-select
       placeholder="Select one"
+      labelKey="label"
+      valueKey="code"
       :options="options"/>
   </div>
 </template>
@@ -15,7 +17,11 @@ export default {
   components: { AwesomeSelect },
   data () {
     return {
-      options: [...Array(500).keys()]
+      options: [
+        { 'label': 'Apple', code: 10 },
+        { 'label': 'Google', code: 100 },
+        { 'label': 'Microsoft', code: 50 }
+      ]
     }
   }
 }
