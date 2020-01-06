@@ -35,7 +35,7 @@
         :key="item[valueKey]"
         @click="select(item)"
         :class="(selected === item) || (selectableIndex === _index) ? 'active' : ''">
-        {{ item[labelKey] }}
+        <span v-html="highlight(item[labelKey])">{{ item[labelKey] }}</span>
       </div>
 
       <p class="awesome-select-message" v-if="virtualOptions.length === 0">Sorry, no matching option.</p>
@@ -83,7 +83,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: 'search',
+      default: 'Search',
       required: false
     },
     labelKey: {
@@ -145,6 +145,16 @@ export default {
       let dataLength = this.virtualOptions.length
       this.selectableIndex = dataLength <= index ? dataLength - 1 : index
       this.scrollToItem()
+    },
+    highlight (value) {
+      if (this.searchText) {
+        let matchPos = String(value).toLowerCase().indexOf(this.searchText.toLowerCase())
+        if (matchPos > -1) {
+          let matchStr = String(value).substr(matchPos, this.searchText.length)
+          value = String(value).replace(matchStr, '<span style="font-weight: bold;">' + matchStr + '</span>')
+        }
+      }
+      return value
     }
   },
   watch: {
