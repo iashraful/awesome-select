@@ -83,7 +83,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: 'search',
+      default: 'Search',
       required: false
     },
     labelKey: {
