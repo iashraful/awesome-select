@@ -9,11 +9,8 @@
       @keyup.enter="selectSelectableItem"
       @keyup.up="onArrowKeyUp"
       @keyup.down="onArrowKeyDown"
-      v-closable="{
-        exclude: [],
-        handler: 'closeExpand'
-      }"
       @click="optionExpand=true"
+      v-clickOutside="handleFocusOut"
     />
 
     <div class="awesome-select-icon">
@@ -44,37 +41,14 @@
 </template>
 
 <script>
-import Vue from 'vue'
 
-// Custom directive
-let handleOutsideClick
-Vue.directive('closable', {
-  bind (el, binding, vnode) {
-    handleOutsideClick = (e) => {
-      e.stopPropagation()
-      const { handler, exclude } = binding.value
-      let clickedOnExcludedEl = false
-      exclude.forEach(refName => {
-        if (!clickedOnExcludedEl) {
-          const excludedEl = vnode.context.$refs[refName]
-          clickedOnExcludedEl = excludedEl ? excludedEl.contains(e.target) : false
-        }
-      })
-      if (!el.contains(e.target) && !clickedOnExcludedEl) {
-        vnode.context[handler]()
-      }
-    }
-    document.addEventListener('click', handleOutsideClick)
-    document.addEventListener('touchstart', handleOutsideClick)
-  },
+import clickOutside from '../directives/clickOutside'
 
-  unbind () {
-    document.removeEventListener('click', handleOutsideClick)
-    document.removeEventListener('touchstart', handleOutsideClick)
-  }
-})
 export default {
   name: 'AwesomeSelect',
+  directives: {
+    clickOutside
+  },
   props: {
     options: {
       type: Array,
@@ -107,6 +81,9 @@ export default {
     }
   },
   methods: {
+    handleFocusOut () {
+      this.closeExpand()
+    },
     handleFocusIn () {
       this.searchText = ''
     },
