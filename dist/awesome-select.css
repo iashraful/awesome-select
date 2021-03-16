@@ -1,0 +1,4 @@
+.awesome-select{display:flex;flex-direction:column}.awesome-select .awesome-select-input{padding:5px}.awesome-select .awesome-select-icon{position:absolute;padding-top:5px;right:1rem}.awesome-select .awesome-select-icon img:first-child{padding-right:5px;cursor:pointer}.awesome-select .awesome-select-options{overflow-y:auto;cursor:pointer;z-index:10;width:100%;max-height:250px;border:1px solid;border-top:unset;background-position:center;background-color:#fff}.awesome-select .awesome-select-options .awesome-select-item{margin:0 .5rem;padding:3px .5rem;cursor:pointer}.awesome-select .awesome-select-options .awesome-select-item:hover{background-color:#855ce8;color:white}.awesome-select .awesome-select-options .active{background-color:#855ce8;color:white}.awesome-select .awesome-select-options .awesome-select-message{text-align:center}
+
+
+/*# sourceMappingURL=awesome-select.css.map*/
